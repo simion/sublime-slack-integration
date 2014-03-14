@@ -9,7 +9,13 @@ A Sublime Text 3 plugin which integrates http://slack.com services.
 * allows user to pick a channel to send
 
 ## Configuration
-Open "Settings - User" for Slack and set the key "token" with your slack.com api token
+Open "Settings - User" from Preferences -> Package Settings -> Slack
+
+    {
+      "token": "your-token-goes-here",
+      "username": "SublimeTextBot"
+    }
+    
 You can get the token from https://api.slack.com/#auth (make sure you are authenticated on slack.com with your account)
 
 ## Usage
