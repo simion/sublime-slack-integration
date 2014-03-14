@@ -1,0 +1,12 @@
+[
+    { "caption": "-" },
+    {
+        "caption": "Slack",
+        "children":
+        [
+            { "command": "send_selection", "caption": "Slack: Send Selection" },
+            { "command": "send_message", "caption": "Slack: Send Message (from input)" }
+        ]
+    },
+    { "caption": "-" }
+]

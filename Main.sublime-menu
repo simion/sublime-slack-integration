@@ -1,0 +1,39 @@
+[
+    {
+        "caption": "Preferences",
+        "mnemonic": "n",
+        "id": "preferences",
+        "children":
+        [
+            {
+                "caption": "Package Settings",
+                "mnemonic": "P",
+                "id": "package-settings",
+                "children":
+                [
+                    {
+                        "caption": "Slack",
+                        "children":
+                        [
+                            // {
+                            //     "command": "open_file",
+                            //     "args": {"file": "${packages}/Slack/README.md"},
+                            //     "caption": "README"
+                            // },
+                            {
+                                "command": "open_file",
+                                "args": {"file": "${packages}/Slack/Slack.sublime-settings"},
+                                "caption": "Settings – Default"
+                            },
+                            {
+                                "command": "open_file",
+                                "args": {"file": "${packages}/User/Slack.sublime-settings"},
+                                "caption": "Settings – User"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

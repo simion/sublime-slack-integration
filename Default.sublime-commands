@@ -1,0 +1,23 @@
+[
+    {
+        "caption": "Slack: Send Selection",
+        "command": "send_selection",
+        "args": {}
+    },
+    {
+        "caption": "Slack: Send Message (from input)",
+        "command": "send_message",
+        "args": {}
+    },
+    // settings
+    {
+        "command": "open_file",
+        "args": {"file": "${packages}/Slack/Slack.sublime-settings"},
+        "caption": "Slack: Settings – Default"
+    },
+    {
+        "command": "open_file",
+        "args": {"file": "${packages}/User/Slack.sublime-settings"},
+        "caption": "Slack: Settings – User"
+    }
+]
