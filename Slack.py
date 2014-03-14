@@ -30,7 +30,8 @@ class BaseSend(sublime_plugin.TextCommand):
         self.messages = []
         # check if token is set
         if not self.settings.get('token'):
-            raise Exception('SLACK: Error! Please set your API "token" in Preferences -> Package Settings -> Slack -> Settings - User')
+            sublime.status_message('SLACK: Error! Please set your API "token" in Preferences -> Package Settings -> Slack -> Settings - User')
+            raise Exception('Token missing')
 
     def on_select_channel(self, index):
         if index is -1:
