@@ -1,0 +1,23 @@
+====================
+Thank you for installing Sublime Slack Integration plugin.
+===================
+
+With this plugin you can:
+    * Send selected text to slack.com
+    * Send custom message to slack.com
+    * choose channel when sending messages
+
+=========== TO DO ===========
+Please set your API "token" in
+
+    Menu: Preferences
+    -> Package Settings
+    -> Slack
+    -> Settings - User
+
+
+Example:
+
+{
+    "token": "xyz"
+}
