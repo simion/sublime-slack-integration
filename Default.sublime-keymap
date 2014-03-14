@@ -1,0 +1,4 @@
+[
+    {"keys": ["ctrl+alt+u"], "command": "send_selection"},
+    {"keys": ["ctrl+alt+n"], "command": "send_message"}
+]
