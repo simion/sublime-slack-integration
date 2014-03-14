@@ -10,10 +10,7 @@ except ImportError:
 
 def api_call(url, args={}):
     try:
-        response = urlopen(
-            url=url,
-            data=urlencode(args)
-        ).read().decode('utf8')
+        response = urlopen(url=url + "?{0}".format(urlencode(args))).read().decode('utf8')
     except:
         URL = url + "?" + urlencode(args)
         print('calling:', URL)
