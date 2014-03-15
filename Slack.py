@@ -7,6 +7,7 @@ from .api import api_call
 
 API_CHANNELS = 'https://slack.com/api/channels.list'
 API_USERS = 'https://slack.com/api/users.list'
+API_GROUPS = 'https://slack.com/api/groups.list'
 API_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
 
@@ -30,15 +31,16 @@ class BaseSend(sublime_plugin.TextCommand):
         self.messages = []
         # check if token is set
         if not self.settings.get('team_tokens'):
-            sublime.status_message('SLACK: Error! Please set your API "token" in Preferences -> Package Settings -> Slack -> Settings - User')
+            sublime.error_message('SLACK: Error! Please set your API "token" in Preferences -> Package Settings -> Slack -> Settings - User')
             raise Exception('Team Token missing')
 
-    def on_select_channel(self, index):
+    def on_select_receiver(self, index):
         if index is -1:
+            print(index, self)
             return sublime.status_message('SLACK: sending cancelled')
 
-        channel = self.receivers[index]
-        sublime.status_message("Sending selection to: " + channel.get('name'))
+        receiver = self.receivers[index]
+        sublime.status_message("Sending selection to: " + receiver.get('name'))
 
         username = self.settings.get('username')
         info = sublime.platform()
@@ -51,8 +53,8 @@ class BaseSend(sublime_plugin.TextCommand):
 
         for message in self.messages:
             args = {
-                'token': channel.get('token'),
-                'channel': channel.get('id'),
+                'token': receiver.get('token'),
+                'channel': receiver.get('id'),
                 'text': message,
                 'username': "{0} ({1})".format(username, info)
             }
@@ -63,46 +65,64 @@ class BaseSend(sublime_plugin.TextCommand):
                 sublime.status_message('SLACK: Unexpected error!')
 
     def init_message_send(self):
+        print("init")
         # check is channels are cached in memory
         receivers = []
         if not self.receivers:
             # get the channels and users for each team
             sublime.status_message('Loading channels/users ... Please wait ...')
             for team, token in self.settings.get('team_tokens').items():
-                response = api_call(API_CHANNELS, {
-                    'token': token
+                channels_response = api_call(API_CHANNELS, {
+                    'token': token,
+                    'exclude_archived': 1
                 })
-                for channel in response['channels']:
-                    if not channel['is_archived']:
-                        # bind the token and team to the channel
-                        channel['token'] = token
-                        channel['team'] = team
-                        self.receivers.append(channel)
-                        # add the item to dropdown menu
-                        item = "#{0}".format(channel['name'])
-                        if len(self.settings.get('team_tokens')) > 1:
-                            item += "({0})".format(team)
-                        receivers.append(item)
+                for channel in channels_response['channels']:
+                    # bind the token and team to the channel
+                    channel['token'] = token
+                    channel['team'] = team
+                    channel['type'] = 'channel'
+                    self.receivers.append(channel)
 
-                response = api_call(API_USERS, {
+                groups_response = api_call(API_GROUPS, {
+                    'token': token,
+                    'exclude_archived': 1
+                })
+                for group in groups_response['groups']:
+                    # bind the token and team to the group
+                    group['token'] = token
+                    group['team'] = team
+                    group['type'] = 'group'
+                    self.receivers.append(group)
+
+                users_response = api_call(API_USERS, {
                     'token': token
                 })
-                for member in response['members']:
-                    if not member['deleted']:
+                for user in users_response['members']:
+                    if not user['deleted']:
                         # bind the token and team to the user
-                        member['token'] = token
-                        member['team'] = team
-                        self.receivers.append(member)
-                        # add the user to dropdown menu
-                        item = "@{0}".format(member['name'])
-                        if len(self.settings.get('team_tokens')) > 1:
-                            item += "({0})".format(team)
-                        receivers.append(item)
+                        user['token'] = token
+                        user['team'] = team
+                        user['type'] = 'user'
+                        self.receivers.append(user)
+            # loading done, remove status message
             sublime.status_message('')
+
+        # create receivers dropdown
+        for receiver in self.receivers:
+            if receiver['type'] is 'channel':
+                item = "# {0}".format(receiver['name'])
+            elif receiver['type'] is 'group':
+                item = "● {0}".format(receiver['name'])
+            else:  # is user
+                item = "@ {0}".format(receiver['name'])
+            if len(self.settings.get('team_tokens')) > 1:
+                item += "({0})".format(team)
+            receivers.append(item)
+
         # display a popup and let the user pick a channel
         self.view.window().show_quick_panel(
             receivers,
-            self.on_select_channel)
+            self.on_select_receiver)
 
 
 class SendSelectionCommand(BaseSend):
@@ -114,7 +134,7 @@ class SendSelectionCommand(BaseSend):
             text = self.view.substr(region)
 
             if not text:
-                sublime.status_message("SLACK: Error! No text selected")
+                sublime.error_message("SLACK: Error! No text selected")
                 return
             self.messages.append(text)
 
@@ -131,16 +151,6 @@ class SendMessageCommand(BaseSend):
 
     def on_done(self, message):
         if not message:
-            return sublime.status_message('ERROR: Please enter a message')
+            return sublime.error_message('ERROR: Please enter a message')
         self.messages = [message]
         threading.Thread(target=self.init_message_send).start()
-
-
-class SendFileCommand(BaseSend):
-    """ Under development """
-    def on_select_channel(self, index):
-        if index is -1:
-            return sublime.status_message('SLACK: sending cancelled')
-
-    def run(self, view):
-        print(self.view.file_name())
