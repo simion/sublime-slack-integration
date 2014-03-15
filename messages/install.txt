@@ -3,7 +3,7 @@ Thank you for installing Sublime Slack Integration plugin.
 ===================
 
 With this plugin you can:
-    * Send selected text to slack.com
+    * Sends selected code to slack (multiple cursors == multiple messages)
     * Send custom message to slack.com
     * choose channel when sending messages
 
