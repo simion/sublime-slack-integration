@@ -1,0 +1,4 @@
+Changelog in 1.3:
+    * send private messages to users
+    * send messages to groups (private channels)
+    * support multiple tokens (teams)
