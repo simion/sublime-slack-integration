@@ -14,7 +14,8 @@ Open "Settings - User" from Preferences -> Package Settings -> Slack
 
     {
         "team_tokens": {
-            "Team Name": "token-goes-here",
+            "Team 1": "team-1-token-goes-here",
+            "Team 2": "team-2-token-goes-here",
         },
         "username": "SublimeTextBot"
     }
