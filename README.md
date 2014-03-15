@@ -15,7 +15,7 @@ Open "Settings - User" from Preferences -> Package Settings -> Slack
       "token": "your-token-goes-here",
       "username": "SublimeTextBot"
     }
-    
+
 You can get the token from https://api.slack.com/#auth (make sure you are authenticated on slack.com with your account)
 
 ## Usage
@@ -28,4 +28,14 @@ You can get the token from https://api.slack.com/#auth (make sure you are authen
 * ctrl+alt+n -> Send Custom Message
 
 ## Installation
-to be updated
+Search for "Slack" package in Sublime Package Control
+
+
+## Feedback
+If you have any suggestions, please leave a reply here:
+http://simionbaws.ro/sublime-text-3-slack-integration-plugin/
+
+## Future development
+This plugin will be updated as the slack.com service releases new features in their API.
+If you want to contribute, feel free to fork and make a pull request.
+Thanks
