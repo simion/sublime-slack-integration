@@ -24,8 +24,8 @@ You can get the token from https://api.slack.com/#auth (make sure you are authen
 * Sending a custom message: same process, but choose "Send message". An input box will be prompted.
 
 ## Shortcuts
-* ctrl+alt+u -> Send Selection
-* ctrl+alt+n -> Send Custom Message
+* ctrl+alt+u -> Send Selection (osx: control + option + u)
+* ctrl+alt+n -> Send Custom Message (osx: control + option + n)
 
 ## Installation
 Search for "Slack" package in Sublime Package Control
