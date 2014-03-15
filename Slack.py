@@ -6,6 +6,7 @@ from .api import api_call
 
 
 API_CHANNELS = 'https://slack.com/api/channels.list'
+API_USERS = 'https://slack.com/api/users.list'
 API_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
 
 
@@ -14,13 +15,12 @@ class BaseSend(sublime_plugin.TextCommand):
 
     def __init__(self, view):
         super(BaseSend, self).__init__(view)
-
         # here we will store all messages
         self.messages = []
 
         # this channels list is only populated once, per sublime session
         # you need to restart sublime to re-take channels from API
-        self.channels = []
+        self.receivers = []
 
         # load plugin settings
         self.settings = sublime.load_settings("Slack.sublime-settings")
@@ -37,7 +37,7 @@ class BaseSend(sublime_plugin.TextCommand):
         if index is -1:
             return sublime.status_message('SLACK: sending cancelled')
 
-        channel = self.channels[index]
+        channel = self.receivers[index]
         sublime.status_message("Sending selection to: " + channel.get('name'))
 
         username = self.settings.get('username')
@@ -64,8 +64,10 @@ class BaseSend(sublime_plugin.TextCommand):
 
     def init_message_send(self):
         # check is channels are cached in memory
-        if not self.channels:
-            # get the channels for each team
+        receivers = []
+        if not self.receivers:
+            # get the channels and users for each team
+            sublime.status_message('Loading channels/users ... Please wait ...')
             for team, token in self.settings.get('team_tokens').items():
                 response = api_call(API_CHANNELS, {
                     'token': token
@@ -75,18 +77,31 @@ class BaseSend(sublime_plugin.TextCommand):
                         # bind the token and team to the channel
                         channel['token'] = token
                         channel['team'] = team
-                        self.channels.append(channel)
-        # build a list with team/channel names, to use for menus
-        channels = []
-        print(self.channels)
-        for channel in self.channels:
-            channels.append("#{1} ({0})".format(
-                channel['team'],
-                channel['name']))
+                        self.receivers.append(channel)
+                        # add the item to dropdown menu
+                        item = "#{0}".format(channel['name'])
+                        if len(self.settings.get('team_tokens')) > 1:
+                            item += "({0})".format(team)
+                        receivers.append(item)
 
+                response = api_call(API_USERS, {
+                    'token': token
+                })
+                for member in response['members']:
+                    if not member['deleted']:
+                        # bind the token and team to the user
+                        member['token'] = token
+                        member['team'] = team
+                        self.receivers.append(member)
+                        # add the user to dropdown menu
+                        item = "@{0}".format(member['name'])
+                        if len(self.settings.get('team_tokens')) > 1:
+                            item += "({0})".format(team)
+                        receivers.append(item)
+            sublime.status_message('')
         # display a popup and let the user pick a channel
         self.view.window().show_quick_panel(
-            channels,
+            receivers,
             self.on_select_channel)
 
 

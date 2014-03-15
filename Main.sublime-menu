@@ -15,11 +15,11 @@
                         "caption": "Slack",
                         "children":
                         [
-                            // {
-                            //     "command": "open_file",
-                            //     "args": {"file": "${packages}/Slack/README.md"},
-                            //     "caption": "README"
-                            // },
+                            {
+                                "command": "open_file",
+                                "args": {"file": "${packages}/Slack/README.md"},
+                                "caption": "README"
+                            },
                             {
                                 "command": "open_file",
                                 "args": {"file": "${packages}/Slack/Slack.sublime-settings"},
