@@ -6,6 +6,7 @@ With this plugin you can:
     * Sends selected code to slack (multiple cursors == multiple messages)
     * Send custom message to slack.com
     * choose channel when sending messages
+    * Multiple teams support
 
 =========== Usage ===========
 * ctrl+alt+u -> Send Selection
@@ -23,8 +24,12 @@ Please set your API "token" in
 Example:
 
 {
-    "token": "xyz"
+    "team_tokens": {
+        "Team Name": "token-goes-here",
+    },
+    "username": "SublimeTextBot"
 }
+
 
 
  ========= Feedback =========

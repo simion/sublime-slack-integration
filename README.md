@@ -7,13 +7,16 @@ A Sublime Text 3 plugin which integrates http://slack.com services.
 * Sends selected code to slack (multiple cursors == multiple messages)
 * Sends custom message from user input to slack
 * allows user to pick a channel to send
+* Multiple teams support
 
 ## Configuration
 Open "Settings - User" from Preferences -> Package Settings -> Slack
 
     {
-      "token": "your-token-goes-here",
-      "username": "SublimeTextBot"
+        "team_tokens": {
+            "Team Name": "token-goes-here",
+        },
+        "username": "SublimeTextBot"
     }
 
 You can get the token from https://api.slack.com/#auth (make sure you are authenticated on slack.com with your account)

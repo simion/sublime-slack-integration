@@ -29,9 +29,9 @@ class BaseSend(sublime_plugin.TextCommand):
         # reset older messages stored in memory
         self.messages = []
         # check if token is set
-        if not self.settings.get('token'):
+        if not self.settings.get('team_tokens'):
             sublime.status_message('SLACK: Error! Please set your API "token" in Preferences -> Package Settings -> Slack -> Settings - User')
-            raise Exception('Token missing')
+            raise Exception('Team Token missing')
 
     def on_select_channel(self, index):
         if index is -1:
@@ -51,7 +51,7 @@ class BaseSend(sublime_plugin.TextCommand):
 
         for message in self.messages:
             args = {
-                'token': self.settings.get('token'),
+                'token': channel.get('token'),
                 'channel': channel.get('id'),
                 'text': message,
                 'username': "{0} ({1})".format(username, info)
@@ -65,20 +65,24 @@ class BaseSend(sublime_plugin.TextCommand):
     def init_message_send(self):
         # check is channels are cached in memory
         if not self.channels:
-            print('channels taken from API')
-            # get the channels
-            response = api_call(API_CHANNELS, {
-                'token': self.settings.get('token')
-            })
-            self.channels = response['channels']
-        else:
-            print('channels taken from MEMORY')
-
-        # build a list with channel names, to use for menus
+            # get the channels for each team
+            for team, token in self.settings.get('team_tokens').items():
+                response = api_call(API_CHANNELS, {
+                    'token': token
+                })
+                for channel in response['channels']:
+                    if not channel['is_archived']:
+                        # bind the token and team to the channel
+                        channel['token'] = token
+                        channel['team'] = team
+                        self.channels.append(channel)
+        # build a list with team/channel names, to use for menus
         channels = []
+        print(self.channels)
         for channel in self.channels:
-            if not channel['is_archived']:
-                channels.append('#' + channel['name'])
+            channels.append("#{1} ({0})".format(
+                channel['team'],
+                channel['name']))
 
         # display a popup and let the user pick a channel
         self.view.window().show_quick_panel(
