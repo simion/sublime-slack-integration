@@ -3,7 +3,7 @@ import sublime_plugin
 import threading
 
 from .api import api_call
-
+from .loader import Loader
 
 API_CHANNELS = 'https://slack.com/api/channels.list'
 API_USERS = 'https://slack.com/api/users.list'
@@ -38,7 +38,7 @@ class BaseSend(sublime_plugin.TextCommand):
     def on_select_receiver(self, index):
 
         if index is -1:
-            return sublime.status_message('SLACK: sending cancelled')
+            return
 
         receiver = self.receivers[index]
         sublime.status_message("Sending selection to: " + receiver.get('name'))
@@ -59,7 +59,9 @@ class BaseSend(sublime_plugin.TextCommand):
                 'text': message,
                 'username': "{0} ({1})".format(username, info)
             }
+            loader = Loader('Sending message ...')
             response = api_call(API_POST_MESSAGE, args)
+            loader.done = True
             if response['ok']:
                 sublime.status_message('SLACK: Message sent successfully!')
                 # set recipient for next autocomplete
@@ -72,7 +74,7 @@ class BaseSend(sublime_plugin.TextCommand):
         receivers = []
         if not self.receivers:
             # get the channels and users for each team
-            sublime.status_message('Loading channels/users ... Please wait ...')
+            loader = Loader('Loading channels/users/groups')
             for team, token in self.settings.get('team_tokens').items():
                 channels_response = api_call(API_CHANNELS, {
                     'token': token,
@@ -107,7 +109,7 @@ class BaseSend(sublime_plugin.TextCommand):
                         user['type'] = 'user'
                         self.receivers.append(user)
             # loading done, remove status message
-            sublime.status_message('')
+            loader.done = True
 
         # check if the message begins with #channel or @user, and if receiver exists
         if self._must_send_directly():
