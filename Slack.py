@@ -18,6 +18,7 @@ class BaseSend(sublime_plugin.TextCommand):
         super(BaseSend, self).__init__(view)
         # here we will store all messages
         self.messages = []
+        self.last_receiver = None
 
         # this channels list is only populated once, per sublime session
         # you need to restart sublime to re-take channels from API
@@ -35,8 +36,8 @@ class BaseSend(sublime_plugin.TextCommand):
             raise Exception('Team Token missing')
 
     def on_select_receiver(self, index):
+
         if index is -1:
-            print(index, self)
             return sublime.status_message('SLACK: sending cancelled')
 
         receiver = self.receivers[index]
@@ -61,11 +62,12 @@ class BaseSend(sublime_plugin.TextCommand):
             response = api_call(API_POST_MESSAGE, args)
             if response['ok']:
                 sublime.status_message('SLACK: Message sent successfully!')
+                # set recipient for next autocomplete
+                self.next_input_val = self.get_receiver_display(receiver)
             else:
                 sublime.status_message('SLACK: Unexpected error!')
 
     def init_message_send(self):
-        print("init")
         # check is channels are cached in memory
         receivers = []
         if not self.receivers:
@@ -107,6 +109,10 @@ class BaseSend(sublime_plugin.TextCommand):
             # loading done, remove status message
             sublime.status_message('')
 
+        # check if the message begins with #channel or @user, and if receiver exists
+        if self._must_send_directly():
+            return self.on_select_receiver(self.forced_receiver_index)
+
         # create receivers dropdown
         for receiver in self.receivers:
             if receiver['type'] is 'channel':
@@ -123,6 +129,56 @@ class BaseSend(sublime_plugin.TextCommand):
         self.view.window().show_quick_panel(
             receivers,
             self.on_select_receiver)
+
+    def get_receiver_display(self, receiver):
+        pre = ''
+        if receiver['type'] == 'user':
+            pre = '@'
+        elif receiver['type'] == 'channel':
+            pre = '#'
+        elif receiver['type'] == 'group':
+            pre = '.'
+        else:
+            return ''
+
+        return "{0}{1} ".format(pre, receiver['name'])
+
+    def _must_send_directly(self):
+        """ Checks if the message from input box begins with @user  #channel .group  """
+        if len(self.messages) > 1:
+            return False
+        msg = self.messages[0]
+        # check if user
+        if msg.startswith('@'):
+            user = msg[1:msg.find(' ')]
+            # check if the user exists in recipients list
+            for index, receiver in enumerate(self.receivers):
+                if receiver['type'] is 'user' and receiver['name'] == user:
+                    self.messages[0] = self.messages[0].replace('@'+user, '', 1)
+                    self.forced_receiver_index = index
+                    return True
+
+        # check if channel
+        if msg.startswith('#'):
+            channel = msg[1:msg.find(' ')]
+            # check if the user exists in recipients list
+            for index, receiver in enumerate(self.receivers):
+                if receiver['type'] is 'channel' and receiver['name'] == channel:
+                    self.messages[0] = self.messages[0].replace('#'+channel, '', 1)
+                    self.forced_receiver_index = index
+                    return True
+
+        # check if group
+        if msg.startswith('.'):
+            group = msg[1:msg.find(' ')]
+            # check if the user exists in recipients list
+            for index, receiver in enumerate(self.receivers):
+                if receiver['type'] is 'group' and receiver['name'] == group:
+                    self.messages[0] = self.messages[0].replace('.'+group, '', 1)
+                    self.forced_receiver_index = index
+                    return True
+
+        return False
 
 
 class SendSelectionCommand(BaseSend):
@@ -146,8 +202,14 @@ class SendMessageCommand(BaseSend):
 
     def run(self, view):
         super(SendMessageCommand, self).run(view)
+
+        ac = ''
+        if hasattr(self, 'next_input_val'):
+            ac = self.next_input_val
+            del(self.next_input_val)
+
         self.view.window().show_input_panel(
-            "Enter a message", '', self.on_done, None, None)
+            "Enter a message", ac, self.on_done, None, None)
 
     def on_done(self, message):
         if not message:

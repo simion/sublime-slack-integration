@@ -4,12 +4,15 @@ Sublime Text 3 slack.com integration plugin
 A Sublime Text 3 plugin which integrates http://slack.com services.
 
 ### Features
-* Send message to user/channel/group
-* Sends selected code to slack (multiple cursors == multiple messages)
-* Sends custom message from user input to slack
+* Send messages to users/channels/groups
+* Can sends selected code
+* Sends custom message from user input
+* When sending messages from input, @user, #channel or .group at the beggining of the message skips channel/user/group selection dialog
+* New message from input will have autofilled the @user #channel or .group (for quick chatting, if you want to reply directly from sublime and continue working)
 * Multiple tokens(teams) supported
 
 ###Changelog
+* 1.3.2: http://simionbaws.ro/plugins/sublime-slack-1-3-2/
 * 1.3.1: http://simionbaws.ro/plugins/sublime-slack-1-3/
 
 ### Configuration
@@ -27,8 +30,13 @@ You can get the token from https://api.slack.com/#auth (make sure you are authen
 
 ### Usage
 * Select a text and Right click (or ctrl+shift+p) -> Slack: Send selection
-* Choose channel
-* Sending a custom message: same process, but choose "Send message". An input box will be prompted.
+* Sending a custom message:
+ - press Ctrl+Alt+n (or control + command + n)
+ - enter the message
+ - choose a channel/group/user from the dropdown
+If the message begins with @username #channel or .group the message is sent directly to the specified receiver.
+When using new message input box, it will have the last receiver name autocompletet automatically
+
 
 ### Shortcuts
 * ctrl+alt+u -> Send Selection (osx: control + option + u)

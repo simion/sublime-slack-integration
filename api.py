@@ -9,11 +9,11 @@ except ImportError:
 
 
 def api_call(url, args={}):
+    URL = url + "?" + urlencode(args)
+    print('calling:', URL)
     try:
-        response = urlopen(url=url + "?{0}".format(urlencode(args))).read().decode('utf8')
+        response = urlopen(url=URL).read().decode('utf8')
     except:
-        URL = url + "?" + urlencode(args)
-        print('calling:', URL)
         proc = subprocess.Popen(
             ['curl', '-s', URL],
             stdout=subprocess.PIPE,

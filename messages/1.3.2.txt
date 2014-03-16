@@ -1,0 +1,6 @@
+Changes: in 1.3.2:
+
+ * When sending messages from input, the message can begin with @user, #channel or .group to skip channel/user/group selection
+
+ * New message from input will have autofilled the last @user #channel or .group used
+  (for quick chatting, if you want to keep replying from sublime while you see received messages in chrome notifications)
