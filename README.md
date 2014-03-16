@@ -9,6 +9,9 @@ A Sublime Text 3 plugin which integrates http://slack.com services.
 * Sends custom message from user input to slack
 * Multiple tokens(teams) supported
 
+###Changelog
+* 1.3.1: http://simionbaws.ro/plugins/sublime-slack-1-3/
+
 ## Configuration
 Open "Settings - User" from Preferences -> Package Settings -> Slack
 
