@@ -27,6 +27,8 @@ def api_call(url, args={}):
 
     if not response['ok']:
         sublime.error_message(response['error'])
+        if args.get('loader', None):
+            args['loader'].done = True
         return False
 
     return response

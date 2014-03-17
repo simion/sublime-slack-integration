@@ -84,6 +84,7 @@ class BaseSend(sublime_plugin.TextCommand):
             loader = Loader('Loading channels/users/groups')
             for team, token in self.settings.get('team_tokens').items():
                 channels_response = api_call(API_CHANNELS, {
+                    'loader': loader,
                     'token': token,
                     'exclude_archived': 1
                 })
@@ -95,6 +96,7 @@ class BaseSend(sublime_plugin.TextCommand):
                     self.receivers.append(channel)
 
                 groups_response = api_call(API_GROUPS, {
+                    'loader': loader,
                     'token': token,
                     'exclude_archived': 1
                 })
@@ -106,6 +108,7 @@ class BaseSend(sublime_plugin.TextCommand):
                     self.receivers.append(group)
 
                 users_response = api_call(API_USERS, {
+                    'loader': loader,
                     'token': token
                 })
                 for user in users_response['members']:
