@@ -27,9 +27,10 @@ Example:
     "team_tokens": {
         "Team 1": "team-1-token-goes-here",
         "Team 2": "team-2-token-goes-here",
-    },
-    "username": "SublimeTextBot"
+    }
 }
+
+You can get the token from https://api.slack.com/#auth (make sure you are authenticated on slack.com with your account)
 
 
 

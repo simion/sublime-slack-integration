@@ -3,18 +3,22 @@ Sublime Text 3 slack.com integration plugin
 
 A Sublime Text 3 plugin which integrates http://slack.com services.
 
-### Features
-* Send messages to users/channels/groups
-* Can sends selected code
-* Sends custom message from user input
-* When sending messages from input, @user, #channel or .group at the beggining of the message skips channel/user/group selection dialog
-* New message from input will have autofilled the @user #channel or .group (for quick chatting, if you want to reply directly from sublime and continue working)
-* Multiple tokens(teams) supported
 
-###Changelog
-* 1.3.3: http://simionbaws.ro/plugins/sublime-slack-1-3-3/
-* 1.3.2: http://simionbaws.ro/plugins/sublime-slack-1-3-2/
-* 1.3.1: http://simionbaws.ro/plugins/sublime-slack-1-3/
+### Installation
+Search for "Slack" package in Sublime Package Control
+
+
+### Features
+* Send messages to
+    * users
+    * channels
+    * private groups
+* Can send message:
+    * from selected code
+    * from user input
+* @user, #channel or .group supported (at beggining of message)
+* Autofill last @user, #channel or .group used
+* Multiple teams(tokens) support
 
 ### Configuration
 Open "Settings - User" from Preferences -> Package Settings -> Slack
@@ -28,6 +32,12 @@ Open "Settings - User" from Preferences -> Package Settings -> Slack
     }
 
 You can get the token from https://api.slack.com/#auth (make sure you are authenticated on slack.com with your account)
+
+###Changelog
+* 1.3.3: http://simionbaws.ro/plugins/sublime-slack-1-3-3/
+* 1.3.2: http://simionbaws.ro/plugins/sublime-slack-1-3-2/
+* 1.3.1: http://simionbaws.ro/plugins/sublime-slack-1-3/
+
 
 ### Usage
 * Select a text and Right click (or ctrl+shift+p) -> Slack: Send selection
@@ -43,9 +53,6 @@ When using new message input box, it will have the last receiver name autocomple
 * ctrl+alt+u -> Send Selection (osx: control + option + u)
 * ctrl+alt+n -> Send Custom Message (osx: control + option + n)
 
-### Installation
-Search for "Slack" package in Sublime Package Control
-
 
 ### Feedback
 If you have any suggestions, please leave a reply here:
@@ -59,3 +66,16 @@ This plugin will be updated as the slack.com service releases new features in th
 If you want to contribute, feel free to fork and make a pull request.
 Thanks
 
+
+#### Screenshots
+![](http://i.imgur.com/lyv6Yd6.png "Grab message from user input")
+
+![](http://i.imgur.com/fu941bH.png "Receiver selection")
+
+![](http://i.imgur.com/SXnHYZo.png "Direct message sending, skips channe/user/group selection")
+
+![](http://i.imgur.com/SXnHYZo.png "Send message directly to user")
+
+![](http://i.imgur.com/qaXE9EN.png "Send message directly to channel")
+
+![](http://i.imgur.com/7n14c5H.png "Example of received message")
