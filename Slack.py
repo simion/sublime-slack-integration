@@ -32,16 +32,22 @@ class BaseSend(sublime_plugin.TextCommand):
         self.messages = []
         # check if token is set
         if not self.settings.get('team_tokens'):
-            sublime.error_message('SLACK: Error! Please set your API "token" in Preferences -> Package Settings -> Slack -> Settings - User')
+            sublime.error_message('SLACK: Error! Please set your API "team_tokens" in Preferences -> Package Settings -> Slack -> Settings - User')
             raise Exception('Team Token missing')
 
     def on_select_receiver(self, index):
+        """ Triggered after a received is selected from the quick_panel """
+        # start in a new thread, otherwise quick_panel is stuck
+        threading.Thread(
+            target=self.send_messages,
+            args=(index, )).start()
 
+    def send_messages(self, index):
+        print('on_select_receiver')
         if index is -1:
             return
 
         receiver = self.receivers[index]
-        sublime.status_message("Sending selection to: " + receiver.get('name'))
 
         username = self.settings.get('username')
         info = sublime.platform()
@@ -52,6 +58,8 @@ class BaseSend(sublime_plugin.TextCommand):
             # cannot get current OS user
             pass
 
+        print('sending message...')
+        loader = Loader('Sending message ...')
         for message in self.messages:
             args = {
                 'token': receiver.get('token'),
@@ -59,7 +67,6 @@ class BaseSend(sublime_plugin.TextCommand):
                 'text': message,
                 'username': "{0} ({1})".format(username, info)
             }
-            loader = Loader('Sending message ...')
             response = api_call(API_POST_MESSAGE, args)
             loader.done = True
             if response['ok']:
@@ -113,7 +120,7 @@ class BaseSend(sublime_plugin.TextCommand):
 
         # check if the message begins with #channel or @user, and if receiver exists
         if self._must_send_directly():
-            return self.on_select_receiver(self.forced_receiver_index)
+            return self.send_messages(self.forced_receiver_index)
 
         # create receivers dropdown
         for receiver in self.receivers:
@@ -124,7 +131,7 @@ class BaseSend(sublime_plugin.TextCommand):
             else:  # is user
                 item = "@ {0}".format(receiver['name'])
             if len(self.settings.get('team_tokens')) > 1:
-                item += "({0})".format(team)
+                item += "({0})".format(receiver['team'])
             receivers.append(item)
 
         # display a popup and let the user pick a channel
@@ -211,7 +218,7 @@ class SendMessageCommand(BaseSend):
             del(self.next_input_val)
 
         self.view.window().show_input_panel(
-            "Enter a message", ac, self.on_done, None, None)
+            "Slack: Enter a message", ac, self.on_done, None, None)
 
     def on_done(self, message):
         if not message:

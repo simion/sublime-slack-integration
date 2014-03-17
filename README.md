@@ -12,6 +12,7 @@ A Sublime Text 3 plugin which integrates http://slack.com services.
 * Multiple tokens(teams) supported
 
 ###Changelog
+* 1.3.3: http://simionbaws.ro/plugins/sublime-slack-1-3-3/
 * 1.3.2: http://simionbaws.ro/plugins/sublime-slack-1-3-2/
 * 1.3.1: http://simionbaws.ro/plugins/sublime-slack-1-3/
 
@@ -50,7 +51,11 @@ Search for "Slack" package in Sublime Package Control
 If you have any suggestions, please leave a reply here:
 http://simionbaws.ro/sublime-text-3-slack-integration-plugin/
 
+### Bug report / feature request
+Please use github issues system: https://github.com/simion/sublime-slack-integration/issues
+
 ### Future development
 This plugin will be updated as the slack.com service releases new features in their API.
 If you want to contribute, feel free to fork and make a pull request.
 Thanks
+

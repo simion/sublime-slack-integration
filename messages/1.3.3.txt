@@ -1,0 +1,5 @@
+BugFixes in 1.3.3
+
+* after selecting a receiver from dropdown, sublime does not freeze anymore. Instead, it shows a loader in the status bar while sending the message.
+
+* fixed multiple teams name duplicate.
