@@ -26,7 +26,7 @@ def api_call(url, args={}):
     response = json.loads(response)
 
     if not response['ok']:
-        sublime.error_message(response['error'])
+        sublime.error_message("SLACK Api error: {0}" + response['error'])
         if args.get('loader', None):
             args['loader'].done = True
         return False
