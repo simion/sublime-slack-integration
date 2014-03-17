@@ -83,10 +83,9 @@ class BaseSend(sublime_plugin.TextCommand):
             loading = Loader('Loading channels/users/groups')
             for team, token in self.settings.get('team_tokens').items():
                 channels_response = api_call(API_CHANNELS, {
-                    'loading': loading,
                     'token': token,
                     'exclude_archived': 1
-                })
+                }, loading=loading)
                 for channel in channels_response['channels']:
                     # bind the token and team to the channel
                     channel['token'] = token
@@ -95,10 +94,9 @@ class BaseSend(sublime_plugin.TextCommand):
                     self.receivers.append(channel)
 
                 groups_response = api_call(API_GROUPS, {
-                    'loading': loading,
                     'token': token,
                     'exclude_archived': 1
-                })
+                }, loading=loading)
                 for group in groups_response['groups']:
                     # bind the token and team to the group
                     group['token'] = token
@@ -107,9 +105,8 @@ class BaseSend(sublime_plugin.TextCommand):
                     self.receivers.append(group)
 
                 users_response = api_call(API_USERS, {
-                    'loading': loading,
                     'token': token
-                })
+                }, loading=loading)
                 for user in users_response['members']:
                     if not user['deleted']:
                         # bind the token and team to the user
@@ -243,16 +240,17 @@ class UploadCurrentFile(BaseSend):
         threading.Thread(target=self.init_message_send).start()
 
     def on_select_receiver(self, index):
+        if index == -1:
+            return
         threading.Thread(target=self.upload_file, args=(index,)).start()
 
     def upload_file(self, receiver_index):
         receiver = self.receivers[receiver_index]
-        loading = Loader('Uploading file ...')
+        loading = Loader('Uploading file ...', False)
 
         api_call(API_UPLOAD_FILES, {
-            'loading': loading,
             'token': receiver.get('token'),
-            'channels': receiver.get('id'),
-            'file': self.file
-        })
+            'channels': receiver.get('id')
+        }, loading=loading, filename=self.file)
         loading.done = True
+        sublime.status_message('File uploaded successfully!')

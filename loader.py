@@ -19,6 +19,8 @@ class Loader():
 
     def tick(self, i):
         if hasattr(self, 'done') and self.done is True:
+            if success_message is False:
+                return
             return sublime.status_message(self.success_message)
 
         before = i % self.size
