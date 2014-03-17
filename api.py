@@ -1,5 +1,6 @@
 import json
 import subprocess
+import sublime
 
 try:
     from urllib.parse import urlencode
@@ -23,8 +24,9 @@ def api_call(url, args={}):
         response = out.decode('utf8')
 
     response = json.loads(response)
+
     if not response['ok']:
-        print(response['error'])
+        sublime.error_message(response['error'])
         return False
 
     return response
