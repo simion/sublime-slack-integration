@@ -9,6 +9,7 @@ API_CHANNELS = 'https://slack.com/api/channels.list'
 API_USERS = 'https://slack.com/api/users.list'
 API_GROUPS = 'https://slack.com/api/groups.list'
 API_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
+API_UPLOAD_FILES = 'https://slack.com/api/files.upload'
 
 
 class BaseSend(sublime_plugin.TextCommand):
@@ -43,7 +44,6 @@ class BaseSend(sublime_plugin.TextCommand):
             args=(index, )).start()
 
     def send_messages(self, index):
-        print('on_select_receiver')
         if index is -1:
             return
 
@@ -58,8 +58,7 @@ class BaseSend(sublime_plugin.TextCommand):
             # cannot get current OS user
             pass
 
-        print('sending message...')
-        loader = Loader('Sending message ...')
+        loading = Loader('Sending message ...')
         for message in self.messages:
             args = {
                 'token': receiver.get('token'),
@@ -68,7 +67,7 @@ class BaseSend(sublime_plugin.TextCommand):
                 'username': "{0} ({1})".format(username, info)
             }
             response = api_call(API_POST_MESSAGE, args)
-            loader.done = True
+            loading.done = True
             if response['ok']:
                 sublime.status_message('SLACK: Message sent successfully!')
                 # set recipient for next autocomplete
@@ -81,10 +80,10 @@ class BaseSend(sublime_plugin.TextCommand):
         receivers = []
         if not self.receivers:
             # get the channels and users for each team
-            loader = Loader('Loading channels/users/groups')
+            loading = Loader('Loading channels/users/groups')
             for team, token in self.settings.get('team_tokens').items():
                 channels_response = api_call(API_CHANNELS, {
-                    'loader': loader,
+                    'loading': loading,
                     'token': token,
                     'exclude_archived': 1
                 })
@@ -96,7 +95,7 @@ class BaseSend(sublime_plugin.TextCommand):
                     self.receivers.append(channel)
 
                 groups_response = api_call(API_GROUPS, {
-                    'loader': loader,
+                    'loading': loading,
                     'token': token,
                     'exclude_archived': 1
                 })
@@ -108,7 +107,7 @@ class BaseSend(sublime_plugin.TextCommand):
                     self.receivers.append(group)
 
                 users_response = api_call(API_USERS, {
-                    'loader': loader,
+                    'loading': loading,
                     'token': token
                 })
                 for user in users_response['members']:
@@ -119,7 +118,7 @@ class BaseSend(sublime_plugin.TextCommand):
                         user['type'] = 'user'
                         self.receivers.append(user)
             # loading done, remove status message
-            loader.done = True
+            loading.done = True
 
         # check if the message begins with #channel or @user, and if receiver exists
         if self._must_send_directly():
@@ -157,7 +156,7 @@ class BaseSend(sublime_plugin.TextCommand):
 
     def _must_send_directly(self):
         """ Checks if the message from input box begins with @user  #channel .group  """
-        if len(self.messages) > 1:
+        if len(self.messages) > 1 or not self.messages:
             return False
         msg = self.messages[0]
         # check if user
@@ -228,3 +227,32 @@ class SendMessageCommand(BaseSend):
             return sublime.error_message('ERROR: Please enter a message')
         self.messages = [message]
         threading.Thread(target=self.init_message_send).start()
+
+
+class UploadCurrentFile(BaseSend):
+    """ Uploads the current file (active tab)  """
+
+    def __init__(self, view):
+        super(UploadCurrentFile, self).__init__(view)
+        self.file = None
+
+    def run(self, view):
+        super(UploadCurrentFile, self).run(view)
+
+        self.file = self.view.file_name()
+        threading.Thread(target=self.init_message_send).start()
+
+    def on_select_receiver(self, index):
+        threading.Thread(target=self.upload_file, args=(index,)).start()
+
+    def upload_file(self, receiver_index):
+        receiver = self.receivers[receiver_index]
+        loading = Loader('Uploading file ...')
+
+        api_call(API_UPLOAD_FILES, {
+            'loading': loading,
+            'token': receiver.get('token'),
+            'channels': receiver.get('id'),
+            'file': self.file
+        })
+        loading.done = True

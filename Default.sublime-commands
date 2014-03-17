@@ -9,7 +9,11 @@
         "command": "send_message",
         "args": {}
     },
-    // settings
+    {
+        "caption": "Slack: Upload Current File",
+        "command": "upload_current_file",
+        "args": {}
+    },
     {
         "command": "open_file",
         "args": {"file": "${packages}/Slack/Slack.sublime-settings"},

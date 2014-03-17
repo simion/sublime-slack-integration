@@ -15,9 +15,9 @@ class Loader():
         self.success_message = success_message
         self.addend = 1
         self.size = 10
-        sublime.set_timeout(lambda: self.run(0), 50)
+        sublime.set_timeout(lambda: self.tick(0), 50)
 
-    def run(self, i):
+    def tick(self, i):
         if hasattr(self, 'done') and self.done is True:
             return sublime.status_message(self.success_message)
 
@@ -35,4 +35,4 @@ class Loader():
             self.addend = 1
         i += self.addend
 
-        sublime.set_timeout(lambda: self.run(i), 50)
+        sublime.set_timeout(lambda: self.tick(i), 50)
