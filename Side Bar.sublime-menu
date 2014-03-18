@@ -1,0 +1,3 @@
+[
+    { "command": "upload_current_file", "caption": "Slack: Upload File" },
+]

@@ -30,10 +30,9 @@ def api_call(url, args={}, loading=None, filename=None):
         # fallback for sublime bug with urlopen (on linux only)
         if filename:  # upload filename
             proc = subprocess.Popen(
-                ['curl', '-X', 'POST', '-F', 'filename=@'+filename, URL],
+                ['curl', '-X', 'POST', '-F', 'file=@'+filename, URL],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                shell=True)
+                stderr=subprocess.PIPE)
         else:
             proc = subprocess.Popen(
                 ['curl', '-s', URL],

@@ -1,6 +1,7 @@
 import sublime
 import sublime_plugin
 import threading
+from os.path import isfile
 
 from .api import api_call
 from .loader import Loader
@@ -29,11 +30,13 @@ class BaseSend(sublime_plugin.TextCommand):
         self.settings = sublime.load_settings("Slack.sublime-settings")
 
     def run(self, view):
+        # load settings each time a command is ran
+        self.settings = sublime.load_settings("Slack.sublime-settings")
         # reset older messages stored in memory
         self.messages = []
         # check if token is set
         if not self.settings.get('team_tokens'):
-            sublime.error_message('SLACK: Error! Please set your API "team_tokens" in Preferences -> Package Settings -> Slack -> Settings - User')
+            sublime.error_message('SLACK Error: Please set your API "team_tokens" in Preferences -> Package Settings -> Slack -> Settings - User')
             raise Exception('Team Token missing')
 
     def on_select_receiver(self, index):
@@ -198,7 +201,7 @@ class SendSelectionCommand(BaseSend):
             text = self.view.substr(region)
 
             if not text:
-                sublime.error_message("SLACK: Error! No text selected")
+                sublime.error_message("SLACK Error: No text selected")
                 return
             self.messages.append(text)
 
@@ -226,17 +229,15 @@ class SendMessageCommand(BaseSend):
         threading.Thread(target=self.init_message_send).start()
 
 
-class UploadCurrentFile(BaseSend):
+class UploadCurrentFileCommand(BaseSend):
     """ Uploads the current file (active tab)  """
 
-    def __init__(self, view):
-        super(UploadCurrentFile, self).__init__(view)
-        self.file = None
-
     def run(self, view):
-        super(UploadCurrentFile, self).run(view)
+        super(UploadCurrentFileCommand, self).run(view)
 
         self.file = self.view.file_name()
+        if not self.file:
+            return sublime.error_message('SLACK: No file open')
         threading.Thread(target=self.init_message_send).start()
 
     def on_select_receiver(self, index):
@@ -254,3 +255,18 @@ class UploadCurrentFile(BaseSend):
         }, loading=loading, filename=self.file)
         loading.done = True
         sublime.status_message('File uploaded successfully!')
+        self.file = None
+
+
+class UploadFromPathCommand(UploadCurrentFileCommand):
+    def run(self, view):
+        self.settings = sublime.load_settings("Slack.sublime-settings")
+        self.view.window().show_input_panel(
+            'Slack: Enter file path:', '',
+            self.on_done, False, False)
+
+    def on_done(self, path):
+        if not isfile(path):
+            return sublime.error_message('SLACK Error: File not found!\n'+path)
+        self.file = path
+        threading.Thread(target=self.init_message_send).start()

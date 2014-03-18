@@ -8,6 +8,7 @@
             { "command": "send_message", "caption": "Slack: Send Message (from input)" },
             { "caption": "-" },
             { "command": "upload_current_file", "caption": "Slack: Upload Current File" },
+            { "command": "upload_from_path", "caption": "Slack: Upload File From Path" },
         ]
     },
     { "caption": "-" }

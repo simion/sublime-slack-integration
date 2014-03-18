@@ -1,18 +1,19 @@
 [
     {
         "caption": "Slack: Send Selection",
-        "command": "send_selection",
-        "args": {}
+        "command": "send_selection"
     },
     {
         "caption": "Slack: Send Message (from input)",
-        "command": "send_message",
-        "args": {}
+        "command": "send_message"
     },
     {
         "caption": "Slack: Upload Current File",
-        "command": "upload_current_file",
-        "args": {}
+        "command": "upload_current_file"
+    },
+    {
+        "caption": "Slack: Upload File From Path",
+        "command": "upload_from_path"
     },
     {
         "command": "open_file",
