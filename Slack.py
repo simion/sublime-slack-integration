@@ -243,6 +243,8 @@ class UploadCurrentFileCommand(BaseSend):
     def on_select_receiver(self, index):
         if index == -1:
             return
+        if self.receivers[index]['type'] == 'user':
+            return sublime.error_message('Slack: sending files to users is disabled for the moment.\nHowever, you can send files to channels/groups.')
         threading.Thread(target=self.upload_file, args=(index,)).start()
 
     def upload_file(self, receiver_index):
