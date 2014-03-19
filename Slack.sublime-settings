@@ -2,5 +2,6 @@
     "team_tokens": {
 
     },
-    "username": "ST"
+    "username": "ST",
+    "show_plaform_and_name": true
 }

@@ -15,7 +15,8 @@ Open "Settings - User" from Preferences -> Package Settings -> Slack
             "Team 1": "team-1-token-goes-here",
             "Team 2": "team-2-token-goes-here",
         },
-        "username": "SublimeTextBot"
+        "username": "ST",
+        "show_plaform_and_name": true
     }
 
 You can get the token from https://api.slack.com/#auth (make sure you are authenticated on slack.com with your account)

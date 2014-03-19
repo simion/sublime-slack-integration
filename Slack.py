@@ -53,13 +53,18 @@ class BaseSend(sublime_plugin.TextCommand):
         receiver = self.receivers[index]
 
         username = self.settings.get('username')
-        info = sublime.platform()
-        try:
-            import getpass
-            info = "{0}, {1}".format(getpass.getuser(), info)
-        except:
-            # cannot get current OS user
-            pass
+
+        info = ''
+
+        if self.settings.get('show_plaform_and_name'):
+            info = sublime.platform()
+            try:
+                import getpass
+                info = "{0}, {1}".format(getpass.getuser(), info)
+            except:
+                # cannot get current OS user
+                pass
+            info = "({0})".format(info)
 
         loading = Loader('Sending message ...')
         for message in self.messages:
@@ -67,7 +72,7 @@ class BaseSend(sublime_plugin.TextCommand):
                 'token': receiver.get('token'),
                 'channel': receiver.get('id'),
                 'text': message,
-                'username': "{0} ({1})".format(username, info)
+                'username': "{0} {1}".format(username, info)
             }
             response = api_call(API_POST_MESSAGE, args)
             loading.done = True
