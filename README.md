@@ -72,6 +72,11 @@ Please use github issues system: https://github.com/simion/sublime-slack-integra
 This plugin is constantly being upgraded as the slack.com API team releases new features or fixes existing bugs.
 If you want to contribute, feel free to fork and make a pull request. The code must pe PEP8 compliant to be accepted (or at least close to that)
 
+### Support
+I like beer.
+So if you'd like to support the continuous development of this plugin, you could buy me a beer: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NNPZNQULPETD4
+
+
 
 #### Screenshots
 ![](http://i.imgur.com/lyv6Yd6.png "Grab message from user input")
