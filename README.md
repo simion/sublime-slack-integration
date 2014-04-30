@@ -16,6 +16,7 @@ Open "Settings - User" from Preferences -> Package Settings -> Slack
             "Team 2": "team-2-token-goes-here",
         },
         "username": "ST",
+        "avatar_url": "http://simionbaws.ro/icons/sublime-48.png",
         "show_plaform_and_name": true
     }
 
@@ -39,6 +40,7 @@ You can get the token from https://api.slack.com/#auth (make sure you are authen
 
 
 ###Changelog
+* 1.4.3: http://simionbaws.ro/plugins/sublime-slack-1-4-3/
 * 1.4.0: http://simionbaws.ro/plugins/sublime-slack-1-4-0/
 * 1.3.3: http://simionbaws.ro/plugins/sublime-slack-1-3-3/
 * 1.3.2: http://simionbaws.ro/plugins/sublime-slack-1-3-2/

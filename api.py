@@ -8,10 +8,15 @@ try:
 except ImportError:
     from urllib import urlencode, urlopen
 
+BASE_URL = 'https://slack.com/api/'
 
-def api_call(url, args={}, loading=None, filename=None):
 
-    URL = url + "?" + urlencode(args)
+def api_call(method, call_args={}, loading=None, filename=None, icon=None):
+
+    if icon:
+        call_args['icon_url'] = icon
+        print('icon', icon)
+    URL = BASE_URL + method + "?" + urlencode(call_args)
     print('calling:', URL)
     try:
         if filename:

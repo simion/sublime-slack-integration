@@ -6,11 +6,12 @@ from os.path import isfile
 from .api import api_call
 from .loader import Loader
 
-API_CHANNELS = 'https://slack.com/api/channels.list'
-API_USERS = 'https://slack.com/api/users.list'
-API_GROUPS = 'https://slack.com/api/groups.list'
-API_POST_MESSAGE = 'https://slack.com/api/chat.postMessage'
-API_UPLOAD_FILES = 'https://slack.com/api/files.upload'
+# methods
+API_CHANNELS = 'channels.list'
+API_USERS = 'users.list'
+API_GROUPS = 'groups.list'
+API_POST_MESSAGE = 'chat.postMessage'
+API_UPLOAD_FILES = 'files.upload'
 
 
 class BaseSend(sublime_plugin.TextCommand):
@@ -28,6 +29,11 @@ class BaseSend(sublime_plugin.TextCommand):
 
         # load plugin settings
         self.settings = sublime.load_settings("Slack.sublime-settings")
+
+    def _api_call(self, *args, **kwargs):
+        if args[0] == API_POST_MESSAGE:
+            kwargs['icon'] = self.settings.get('avatar_url')
+        return api_call(*args, **kwargs)
 
     def run(self, view):
         # load settings each time a command is ran
@@ -74,7 +80,7 @@ class BaseSend(sublime_plugin.TextCommand):
                 'text': message,
                 'username': "{0} {1}".format(username, info)
             }
-            response = api_call(API_POST_MESSAGE, args)
+            response = self._api_call(API_POST_MESSAGE, args)
             loading.done = True
             if response['ok']:
                 sublime.status_message('SLACK: Message sent successfully!')
@@ -90,7 +96,7 @@ class BaseSend(sublime_plugin.TextCommand):
             # get the channels and users for each team
             loading = Loader('Loading channels/users/groups')
             for team, token in self.settings.get('team_tokens').items():
-                channels_response = api_call(API_CHANNELS, {
+                channels_response = self._api_call(API_CHANNELS, {
                     'token': token,
                     'exclude_archived': 1
                 }, loading=loading)
@@ -101,7 +107,7 @@ class BaseSend(sublime_plugin.TextCommand):
                     channel['type'] = 'channel'
                     self.receivers.append(channel)
 
-                groups_response = api_call(API_GROUPS, {
+                groups_response = self._api_call(API_GROUPS, {
                     'token': token,
                     'exclude_archived': 1
                 }, loading=loading)
@@ -112,7 +118,7 @@ class BaseSend(sublime_plugin.TextCommand):
                     group['type'] = 'group'
                     self.receivers.append(group)
 
-                users_response = api_call(API_USERS, {
+                users_response = self._api_call(API_USERS, {
                     'token': token
                 }, loading=loading)
                 for user in users_response['members']:
@@ -256,7 +262,7 @@ class UploadCurrentFileCommand(BaseSend):
         receiver = self.receivers[receiver_index]
         loading = Loader('Uploading file ...', False)
 
-        api_call(API_UPLOAD_FILES, {
+        self._api_call(API_UPLOAD_FILES, {
             'token': receiver.get('token'),
             'channels': receiver.get('id')
         }, loading=loading, filename=self.file)
