@@ -1,0 +1,2 @@
+Changelog:
+fixed critical installation issue.
