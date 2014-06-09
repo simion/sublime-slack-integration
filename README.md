@@ -40,6 +40,7 @@ You can get the token from https://api.slack.com/#auth (make sure you are authen
 
 
 ###Changelog
+* 1.4.5: Code preformatting
 * 1.4.3: http://simionbaws.ro/plugins/sublime-slack-1-4-3/
 * 1.4.0: http://simionbaws.ro/plugins/sublime-slack-1-4-0/
 * 1.3.3: http://simionbaws.ro/plugins/sublime-slack-1-3-3/
