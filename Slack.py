@@ -214,7 +214,7 @@ class SendSelectionCommand(BaseSend):
             if not text:
                 sublime.error_message("SLACK Error: No text selected")
                 return
-            self.messages.append(text)
+            self.messages.append("```{0}```".format(text))
 
         threading.Thread(target=self.init_message_send).start()
 
