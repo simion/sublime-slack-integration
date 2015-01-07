@@ -12,6 +12,8 @@ API_USERS = 'users.list'
 API_GROUPS = 'groups.list'
 API_POST_MESSAGE = 'chat.postMessage'
 API_UPLOAD_FILES = 'files.upload'
+API_OPEN_IM_SESSION = 'im.open'
+API_CLOSE_IM_SESSION = 'im.close'
 
 
 class BaseSend(sublime_plugin.TextCommand):
@@ -57,13 +59,15 @@ class BaseSend(sublime_plugin.TextCommand):
             return
 
         receiver = self.receivers[index]
+        token = receiver.get('token')
 
         username = self.settings.get('username')
 
         info = ''
 
-        if self.settings.get('username_append_in_parens'):
-            info = "({0})".format(self.settings.get('username_subtext'))
+        subtext = self.settings.get('username_subtext')
+        if subtext and subtext is not None:
+            info = "({0})".format(subtext)
         elif self.settings.get('show_plaform_and_name'):
             info = sublime.platform()
             try:
@@ -75,10 +79,32 @@ class BaseSend(sublime_plugin.TextCommand):
             info = "({0})".format(info)
 
         loading = Loader('Sending message ...')
+
+        channel = receiver.get('id')
+        channel_needs_closing = False
+
+        if receiver.get('type') == 'user':
+            session_open_response = self._api_call(API_OPEN_IM_SESSION, {
+                'token': token,
+                'user': channel
+            })
+            # print(session_open_response)
+            if not session_open_response.get('ok'):
+                loading.done = True
+                sublime.status_message('SLACK: Unexpected error!')
+                return
+
+            if not session_open_response.get('already_open'):
+                channel_needs_closing = True
+
+            im_channel = session_open_response.get('channel')
+            if im_channel and im_channel.get('id'):
+                channel = im_channel.get('id')
+
         for message in self.messages:
             args = {
-                'token': receiver.get('token'),
-                'channel': receiver.get('id'),
+                'token': token,
+                'channel': channel,
                 'text': message,
                 'username': "{0} {1}".format(username, info)
             }
@@ -90,6 +116,14 @@ class BaseSend(sublime_plugin.TextCommand):
                 self.next_input_val = self.get_receiver_display(receiver)
             else:
                 sublime.status_message('SLACK: Unexpected error!')
+
+        if channel_needs_closing:
+            self._api_call(API_CLOSE_IM_SESSION, {
+                'token': token,
+                'channel': channel
+            })
+        loading.done = True
+
 
     def init_message_send(self):
         # check is channels are cached in memory
@@ -168,7 +202,7 @@ class BaseSend(sublime_plugin.TextCommand):
         return "{0}{1} ".format(pre, receiver['name'])
 
     def _must_send_directly(self):
-        """ Checks if the message from input box begins with @user  #channel .group  """
+        """ Checks if the message from input box begins with @user #channel .group  """
         if len(self.messages) > 1 or not self.messages:
             return False
         msg = self.messages[0]

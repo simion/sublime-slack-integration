@@ -1,3 +1,4 @@
 Changelog:
 Fixed empty filename on uploads.
-Added `"repeat_file_ext"` and `"username_subtext"` settings -- see https://github.com/davejhilton/sublime-slack-integration for details
+Made it so that messages with "@user" receivers are sent via IM (private messages) rather than to that user's slackbot channel
+Added "repeat_file_ext" and "username_subtext" settings -- see https://github.com/simion/sublime-slack-integration for details

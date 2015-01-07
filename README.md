@@ -72,14 +72,14 @@ With this option set to true, it would show up as `script.py` in Slack, at the e
 
 
 ###Changelog
-* 1.4.6: Added `"repeat_file_ext"` option
-* 1.4.6: Added `"username_subtext"` option, and fixed empty filename on uploads
-* 1.4.5: Code preformatting
-* 1.4.3: http://simionbaws.ro/plugins/sublime-slack-1-4-3/
-* 1.4.0: http://simionbaws.ro/plugins/sublime-slack-1-4-0/
-* 1.3.3: http://simionbaws.ro/plugins/sublime-slack-1-3-3/
-* 1.3.2: http://simionbaws.ro/plugins/sublime-slack-1-3-2/
-* 1.3.1: http://simionbaws.ro/plugins/sublime-slack-1-3/
+* __1.4.6__: Fixed empty filename on uploads. Made it so that messages sent to users via `@user` are sent via IM (private message) rather than to that user's slackbot channel.
+Added `"repeat_file_ext"` and `"username_subtext"` options
+* __1.4.5__: Code preformatting
+* __1.4.3__: http://simionbaws.ro/plugins/sublime-slack-1-4-3/
+* __1.4.0__: http://simionbaws.ro/plugins/sublime-slack-1-4-0/
+* __1.3.3__: http://simionbaws.ro/plugins/sublime-slack-1-3-3/
+* __1.3.2__: http://simionbaws.ro/plugins/sublime-slack-1-3-2/
+* __1.3.1__: http://simionbaws.ro/plugins/sublime-slack-1-3/
 
 
 ### Usage
