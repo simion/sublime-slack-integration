@@ -264,7 +264,8 @@ class UploadCurrentFileCommand(BaseSend):
 
         self._api_call(API_UPLOAD_FILES, {
             'token': receiver.get('token'),
-            'channels': receiver.get('id')
+            'channels': receiver.get('id'),
+            'filename': self.file.split('/').pop()
         }, loading=loading, filename=self.file)
         loading.done = True
         sublime.status_message('File uploaded successfully!')
