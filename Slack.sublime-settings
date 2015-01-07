@@ -3,6 +3,8 @@
 
     },
     "username": "ST",
+    "username_subtext": null,
     "avatar_url": "http://simionbaws.ro/icons/sublime-48.png",
-    "show_plaform_and_name": true
+    "show_plaform_and_name": true,
+    "repeat_file_ext": false
 }
