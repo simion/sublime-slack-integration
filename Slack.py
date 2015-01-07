@@ -267,11 +267,17 @@ class UploadCurrentFileCommand(BaseSend):
         self._api_call(API_UPLOAD_FILES, {
             'token': receiver.get('token'),
             'channels': receiver.get('id'),
-            'filename': self.file.split('/').pop()
+            'filename': self.friendly_filename()
         }, loading=loading, filename=self.file)
         loading.done = True
         sublime.status_message('File uploaded successfully!')
         self.file = None
+
+    def friendly_filename(self):
+        filename = self.file.split('/').pop()
+        if self.settings.get('repeat_file_ext') and len(filename.split('.')) > 1:
+            filename += '.' + filename.split('.').pop()
+        return filename
 
 
 class UploadFromPathCommand(UploadCurrentFileCommand):

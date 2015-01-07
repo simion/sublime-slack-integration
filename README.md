@@ -18,6 +18,7 @@ Open "Settings - User" from Preferences -> Package Settings -> Slack
         "username": "Sublime",
         "username_subtext": "via Sublime",
         "show_plaform_and_name": true,
+        "repeat_file_ext": false,
         "avatar_url": "http://simionbaws.ro/icons/sublime-48.png"
     }
 
@@ -38,6 +39,14 @@ Open "Settings - User" from Preferences -> Package Settings -> Slack
 * ##### `"show_platform_and_name"` (optional)
     * **defaults to `true`**
     * if this is `true` and no setting is given for `username_subtext`, will use your name and your platform as the subtext to the username, e.g. "myUser (simion, linux)"
+
+* ##### `"repeat_file_ext"` (optional)
+    * **defaults to `false`**
+    * If this is `true`, the name of the file being uploaded with have the extension repeated., e.g. `script.py` is uploaded as `script.py.py`.
+    * \*This is meant to account for the fact that Slack, by default, chops off the file extension when displaying the filename. So uploading
+  a file called `script.py` shows up in most places in Slack as just having the filename `script`.
+With this option set to true, it would show up as `script.py` in Slack, at the expense of having the actual uploaded filename as `script.py.py`
+    * \*See [Screenshots](#user-content-screenshots-file-uploads) below for examples
 
 * ##### `"avatar_url"` (required)
     * url to the avatar image to use
@@ -63,6 +72,7 @@ Open "Settings - User" from Preferences -> Package Settings -> Slack
 
 
 ###Changelog
+* 1.4.6: Added `"repeat_file_ext"` option
 * 1.4.6: Added `"username_subtext"` option, and fixed empty filename on uploads
 * 1.4.5: Code preformatting
 * 1.4.3: http://simionbaws.ro/plugins/sublime-slack-1-4-3/
@@ -105,19 +115,42 @@ So if you'd like to support the continuous development of this plugin, you could
 
 
 
-#### Screenshots
-![](http://i.imgur.com/lyv6Yd6.png "Grab message from user input")
+#### Screenshots <a id="screenshots"></a>
+* Grab message from user input
+    * ![](http://i.imgur.com/lyv6Yd6.png "Grab message from user input")
 
-![](http://i.imgur.com/fu941bH.png "Receiver selection")
 
-![](http://i.imgur.com/SXnHYZo.png "Direct message sending, skips channe/user/group selection")
+* Receiver selection
+    * ![](http://i.imgur.com/fu941bH.png "Receiver selection")
 
-![](http://i.imgur.com/SXnHYZo.png "Send message directly to user")
 
-![](http://i.imgur.com/qaXE9EN.png "Send message directly to channel")
+* Direct message sending, skips channel/user/group selection
+    * ![](http://i.imgur.com/SXnHYZo.png "Direct message sending, skips channel/user/group selection")
 
-![](http://i.imgur.com/7n14c5H.png "Example of receved message")
 
-![](http://i.imgur.com/Gf6UvSn.png "Sidebar right click")
+* Send message directly to user
+    * ![](http://i.imgur.com/SXnHYZo.png "Send message directly to user")
 
-![](http://i.imgur.com/GTfi88U.png "Quick menu")
+
+* Send message to channel
+    * ![](http://i.imgur.com/qaXE9EN.png "Send message directly to channel")
+
+
+* Example of received message
+    * ![](http://i.imgur.com/7n14c5H.png "Example of received message")
+
+
+* Example of uploaded file - *WITHOUT* `"repeat_file_ext"` setting <a id="screenshots-file-uploads"></a>
+    * ![](http://i.imgur.com/hxsNw1t.png "Without 'repeat_file_ext' setting")
+
+
+* Example of uploaded file - *WITH* `"repeat_file_ext"` setting (notice the `.py`)
+    * ![](http://i.imgur.com/eZRO97k.png "With 'repeat_file_ext' setting")
+
+
+* Sidebar right-click
+    * ![](http://i.imgur.com/Gf6UvSn.png "Sidebar right-click")
+
+
+* Quick menu
+    * ![](http://i.imgur.com/GTfi88U.png "Quick menu")

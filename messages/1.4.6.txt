@@ -1,0 +1,3 @@
+Changelog:
+Fixed empty filename on uploads.
+Added `"repeat_file_ext"` and `"username_subtext"` settings -- see https://github.com/davejhilton/sublime-slack-integration for details
