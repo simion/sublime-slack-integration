@@ -62,7 +62,9 @@ class BaseSend(sublime_plugin.TextCommand):
 
         info = ''
 
-        if self.settings.get('show_plaform_and_name'):
+        if self.settings.get('username_append_in_parens'):
+            info = "({0})".format(self.settings.get('username_subtext'))
+        elif self.settings.get('show_plaform_and_name'):
             info = sublime.platform()
             try:
                 import getpass

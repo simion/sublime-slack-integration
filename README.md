@@ -15,12 +15,35 @@ Open "Settings - User" from Preferences -> Package Settings -> Slack
             "Team 1": "team-1-token-goes-here",
             "Team 2": "team-2-token-goes-here",
         },
-        "username": "ST",
-        "avatar_url": "http://simionbaws.ro/icons/sublime-48.png",
-        "show_plaform_and_name": true
+        "username": "Sublime",
+        "username_subtext": "via Sublime",
+        "show_plaform_and_name": true,
+        "avatar_url": "http://simionbaws.ro/icons/sublime-48.png"
     }
 
-You can get the token from https://api.slack.com/#auth (make sure you are authenticated on slack.com with your account)
+* ##### `"team_tokens"` (required)
+    * A list of tokens you have, keyed by the team name that the token corresponds to.
+    * You can get the token(s) from https://api.slack.com/web#auth (make sure you are authenticated on slack.com with your account)
+
+* ##### `"username"` (required)
+    * **defaults to "Sublime"**
+    * The "sender" username that will be attributed to each message
+
+* ##### `"username_subtext"`(optional)
+    * The parenthetical subtext to show next to your username. Defaults to "via Sublime".
+    * \*Note that if set, this setting will override the `"show_platform_and_name"` setting
+    * \*Slack enforces that external plugins have parenthetical subtext next to the sender's username for each message.
+  So if this option is omitted AND the `"show_platform_and_name"` setting is `false`, Slack adds the default subtext "bot", e.g., "myUser (bot)"
+
+* ##### `"show_platform_and_name"` (optional)
+    * **defaults to `true`**
+    * if this is `true` and no setting is given for `username_subtext`, will use your name and your platform as the subtext to the username, e.g. "myUser (simion, linux)"
+
+* ##### `"avatar_url"` (required)
+    * url to the avatar image to use
+    * **defaults to** [http://simionbaws.ro/icons/sublime-48.png](http://simionbaws.ro/icons/sublime-48.png)
+    * ![alt text](http://simionbaws.ro/icons/sublime-48.png)
+
 
 ### Features
 * Send messages to
@@ -40,6 +63,7 @@ You can get the token from https://api.slack.com/#auth (make sure you are authen
 
 
 ###Changelog
+* 1.4.6: Added `"username_subtext"` option, and fixed empty filename on uploads
 * 1.4.5: Code preformatting
 * 1.4.3: http://simionbaws.ro/plugins/sublime-slack-1-4-3/
 * 1.4.0: http://simionbaws.ro/plugins/sublime-slack-1-4-0/
