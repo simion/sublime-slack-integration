@@ -5,6 +5,7 @@
         "children":
         [
             { "command": "send_selection", "caption": "Slack: Send Selection" },
+            { "command": "upload_selection_as_file", "caption": "Slack: Upload Selection As File" },
             { "command": "send_message", "caption": "Slack: Send Message (from input)" },
             { "caption": "-" },
             { "command": "upload_current_file", "caption": "Slack: Upload Current File" },
