@@ -320,8 +320,6 @@ class UploadSelectionAsFileCommand(UploadCurrentFileCommand):
         super(UploadCurrentFileCommand, self).run(view)
 
         self.file = self.view.file_name()
-        if not self.file:
-            return sublime.error_message('SLACK: No file open')
 
         # get all selected regions
         for region in self.view.sel():
@@ -333,6 +331,31 @@ class UploadSelectionAsFileCommand(UploadCurrentFileCommand):
             self.messages.append(text)
 
         threading.Thread(target=self.init_message_send).start()
+
+    def friendly_filename(self):
+
+        if self.file is None:
+
+            self.file = 'Untitled'
+            ext = self.get_extension_from_scope()
+
+            if ext:
+                self.file = '{}.{}'.format(self.file, ext)
+
+        return super(UploadSelectionAsFileCommand, self).friendly_filename()
+
+    def get_extension_from_scope(self):
+
+        scope = self.view.scope_name(0)
+
+        if 'html' in scope:
+            return 'html'
+        if 'python' in scope:
+            return 'py'
+        if 'sql' in scope:
+            return 'sql'
+
+        return ''
 
     def upload_file(self, receiver_index):
 
