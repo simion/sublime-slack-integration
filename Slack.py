@@ -124,7 +124,6 @@ class BaseSend(sublime_plugin.TextCommand):
             })
         loading.done = True
 
-
     def init_message_send(self):
         # check is channels are cached in memory
         receivers = []
@@ -312,6 +311,69 @@ class UploadCurrentFileCommand(BaseSend):
         if self.settings.get('repeat_file_ext') and len(filename.split('.')) > 1:
             filename += '.' + filename.split('.').pop()
         return filename
+
+
+class UploadSelectionAsFileCommand(UploadCurrentFileCommand):
+    """ Uploads current selected text as file """
+
+    def run(self, view):
+        super(UploadCurrentFileCommand, self).run(view)
+
+        self.file = self.view.file_name()
+
+        # get all selected regions
+        for region in self.view.sel():
+            text = self.view.substr(region)
+
+            if not text:
+                sublime.error_message("SLACK Error: No text selected")
+                return
+            self.messages.append(text)
+
+        threading.Thread(target=self.init_message_send).start()
+
+    def friendly_filename(self):
+
+        if self.file is None:
+
+            self.file = 'Untitled'
+            ext = self.get_extension_from_scope()
+
+            if ext:
+                self.file = '{}.{}'.format(self.file, ext)
+
+        return super(UploadSelectionAsFileCommand, self).friendly_filename()
+
+    def get_extension_from_scope(self):
+
+        scope = self.view.scope_name(0)
+
+        if 'html' in scope:
+            return 'html'
+        if 'python' in scope:
+            return 'py'
+        if 'sql' in scope:
+            return 'sql'
+
+        return ''
+
+    def upload_file(self, receiver_index):
+
+        receiver = self.receivers[receiver_index]
+        loading = Loader('Uploading file ...', False)
+
+        for content in self.messages:
+
+            self._api_call(API_UPLOAD_FILES, {
+                'token': receiver.get('token'),
+                'channels': receiver.get('id'),
+                'filename': self.friendly_filename(),
+                'content': content
+            }, loading=loading)
+
+        loading.done = True
+        sublime.status_message('Selection uploaded successfully!')
+        self.file = None
 
 
 class UploadFromPathCommand(UploadCurrentFileCommand):

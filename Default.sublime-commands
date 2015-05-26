@@ -12,6 +12,10 @@
         "command": "upload_current_file"
     },
     {
+        "caption": "Slack: Upload Selection As File",
+        "command": "upload_selection_as_file"
+    },
+    {
         "caption": "Slack: Upload File From Path",
         "command": "upload_from_path"
     },
