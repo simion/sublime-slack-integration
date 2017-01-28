@@ -2,7 +2,8 @@ Sublime Text 3 slack.com integration plugin
 =========================
 
 A Sublime Text 3 plugin which integrates http://slack.com services.  
-Currently the plugin is maintained but not developed, since I stopped using Sublime Text. if you want to contribute, I will analyze your pull request and make a release if everything is ok.
+
+### This plugin is no longer maintained (mainly because I switched to PyCharm). If someone wants to continue work on this, i will give access rights.
 
 ### Installation
 Search for "Slack" package in Sublime Package Control
